@@ -19,7 +19,7 @@ instead, it runs using **Pi-hole's network stack**
 (`network_mode: service:pihole`). This means:
 
 - **cloudflared is not exposed to the host network** but can still handle DNS-over-HTTPS queries.
-- **Pi-hole forwards all upstream DNS queries** to `127.0.0.1#5053`, where cloudflared handles DoH lookups.
+- **Pi-hole forwards all upstream DNS queries** to `127.0.0.1#5335`, where cloudflared handles DoH lookups.
 - **No additional networking configurations are needed** for cloudflared.
 
 ## Prerequisites
@@ -112,7 +112,7 @@ docker exec -it pihole /bin/bash
 Test that cloudflared is operational:
 
 ```bash
-dig pi-hole.net @127.0.0.1 -p 5053
+dig pi-hole.net @127.0.0.1 -p 5335
 ```
 
 The first query may be quite slow, but subsequent queries should be fairly
