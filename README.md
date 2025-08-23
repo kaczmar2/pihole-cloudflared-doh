@@ -179,7 +179,7 @@ This will show logs for both the `pihole` and `cloudflared` containers.
 
 ```bash
 docker logs pihole
-docker logs cloudflared
+docker logs cloudflared-doh
 ```
 
 ## Notes
