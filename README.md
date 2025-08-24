@@ -1,4 +1,4 @@
-# Pi-hole v6 + cloudflared in Docker
+# Pi-hole v6 + cloudflared (DoH) in Docker
 
 ## Summary
 
