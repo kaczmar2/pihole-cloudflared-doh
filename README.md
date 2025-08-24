@@ -59,14 +59,14 @@ You can download the latest version of this repository using **`wget`** or **`cu
 **Option 1: Using `wget`**
 
 ```bash
-wget https://github.com/kaczmar2/pihole-cloudflared/archive/refs/heads/main.tar.gz
+wget https://github.com/kaczmar2/pihole-cloudflared-doh/archive/refs/heads/main.tar.gz
 tar -xzf main.tar.gz --strip-components=1
 ```
 
 **Option 2: Using `curl`**
 
 ```bash
-curl -L -o main.tar.gz https://github.com/kaczmar2/pihole-cloudflared/archive/refs/heads/main.tar.gz
+curl -L -o main.tar.gz https://github.com/kaczmar2/pihole-cloudflared-doh/archive/refs/heads/main.tar.gz
 tar -xzf main.tar.gz --strip-components=1
 ```
 
