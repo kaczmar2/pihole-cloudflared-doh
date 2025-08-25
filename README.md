@@ -45,7 +45,7 @@ chmod -R 755 /srv/docker
 cd ~/docker/pihole-cloudflared
 ```
 
-### **What These Commands Do**
+### What These Commands Do
 
 - `mkdir -p ~/docker/pihole-cloudflared`: Creates a working directory in your home folder.
 - `sudo mkdir -p /srv/docker/...`: Creates **bind mounts** for Pi-hole.
@@ -54,16 +54,7 @@ cd ~/docker/pihole-cloudflared
 
 ## Step 2: Download the Repository
 
-You can download the latest version of this repository using **`wget`** or **`curl`**:
-
-**Option 1: Using `wget`**
-
-```bash
-wget https://github.com/kaczmar2/pihole-cloudflared-doh/archive/refs/heads/main.tar.gz
-tar -xzf main.tar.gz --strip-components=1
-```
-
-**Option 2: Using `curl`**
+Download the latest version of this repository:
 
 ```bash
 curl -L -o main.tar.gz https://github.com/kaczmar2/pihole-cloudflared-doh/archive/refs/heads/main.tar.gz
@@ -82,7 +73,7 @@ Optional: Remove the archive after extraction:
 rm main.tar.gz
 ```
 
-## Step 3: Configure DoH Provider
+## Step 3: Configure the DoH Provider
 
 By default, the `.env` file is configured to use **Cloudflare's DoH service**
 (<https://cloudflare-dns.com/dns-query>). If you want to use a different provider,
@@ -98,7 +89,7 @@ Now, deploy the Pi-hole and cloudflared services using:
 docker compose up -d
 ```
 
-## Step 5: Verify cloudflared is Working
+## Step 5: Verify cloudflared Is Working
 
 To confirm cloudflared is resolving queries correctly, run the following
 commands **in the pihole container**:
@@ -166,7 +157,7 @@ http://<your-server-ip>/admin/
 
 Login using the password you set.
 
-## Step 8: Secure with SSL (Optional)
+## Step 8: Secure Web Interface With SSL (Optional)
 
 For enhanced security, see my other guides on **configuring SSL encryption**
 for the Pi-hole web interface.
