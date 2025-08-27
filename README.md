@@ -67,12 +67,6 @@ The `--strip-components=1` flag ensures the contents are extracted directly into
 **Note**: This setup uses cloudflared as a DNS-over-HTTPS proxy, providing
 enhanced privacy and security for DNS queries.
 
-Optional: Remove the archive after extraction:
-
-```sh
-rm main.tar.gz
-```
-
 ## Step 3: Configure the DoH Provider
 
 By default, the `.env` file is configured to use **Cloudflare's DoH service**
@@ -81,15 +75,86 @@ edit the `DOH_PRIMARY` variable in the `.env` file before starting the
 containers. See the [DNS-over-HTTPS Providers table](#common-dns-over-https-providers)
 at the bottom for other options.
 
-## Step 4: Start the Pi-hole + cloudflared Containers
+## Step 3: Set the Pi-hole Admin Password
 
-Now, deploy the Pi-hole and cloudflared services using:
+### Automated Setup
+
+Use the automated setup script to configure your Pi-hole admin password:
 
 ```bash
-docker compose up -d
+./set-password.sh
 ```
 
-## Step 5: Verify cloudflared Is Working
+This script will:
+
+- Prompt you securely for a password
+- Temporarily disable the password environment variable in docker-compose.yml
+- Set the password in the Pi-hole container (writes to pihole.toml)
+- Extract and save the password hash to your `.env` file
+- Re-enable the password environment variable in docker-compose.yml
+- Restart containers with the new configuration
+- Create backups of your config files
+
+Your Pi-hole admin interface will be ready with the password you set.
+
+### Manual Setup
+
+If you prefer the manual approach or need to troubleshoot:
+
+<details>
+<summary>Click to expand manual setup instructions</summary>
+
+**Important**: For Pi-hole v6, environment variables override the TOML file.
+You must temporarily comment out the password environment variable to allow
+the TOML file to be updated.
+
+1. Comment out `FTLCONF_webserver_api_pwhash` in `docker-compose.yml`:
+
+   ```yaml
+   # FTLCONF_webserver_api_pwhash: ${WEBSERVER_PWHASH}
+   ```
+
+2. Restart containers to apply the change:
+
+   ```bash
+   docker compose down && docker compose up -d
+   ```
+
+3. Set your password in the Pi-hole container:
+
+   ```bash
+   docker exec -it pihole /bin/bash
+   pihole setpassword 'mypassword'
+   ```
+
+4. Get the hashed password from `pihole.toml`:
+
+   ```bash
+   cat /etc/pihole/pihole.toml | grep -E "^[[:space:]]*pwhash[[:space:]]*="
+   exit
+   ```
+
+5. Copy the hash value and add it to your `.env` file (enclose in single quotes):
+
+   ```bash
+   WEBSERVER_PWHASH='$BALLOON-SHA256$v=1$s=1024,t=32$pZCbBIUH/Ew2n144eLn3vw==$vgej+obQip4DvSmNlywD0LUHlsHcqgLdbQLvDscZs78='
+   ```
+
+6. Uncomment the `FTLCONF_webserver_api_pwhash` environment variable in `docker-compose.yml`:
+
+   ```yaml
+   FTLCONF_webserver_api_pwhash: ${WEBSERVER_PWHASH}
+   ```
+
+7. Restart the containers:
+
+   ```bash
+   docker compose down && docker compose up -d
+   ```
+
+</details>
+
+## Step 4: Verify cloudflared Is Working
 
 To confirm cloudflared is resolving queries correctly, run the following
 commands **in the pihole container**:
@@ -109,45 +174,7 @@ dig pi-hole.net @127.0.0.1 -p 5335
 The first query may be quite slow, but subsequent queries should be fairly
 quick.
 
-## Step 6: Set the Pi-hole Admin Password
-
-To set the pihole web admin password, run the following commands
-**in the pihole container**, if you're not already there from the previous
-step (`docker exec -it pihole /bin/bash`):
-
-```bash
-pihole setpassword 'mypassword'
-```
-
-Get the hashed password from `pihole.toml`:
-
-```bash
-cat /etc/pihole/pihole.toml | grep -w pwhash
-```
-
-`exit` the container and copy the hashed password into your `.env` file on the
-host.
-
-Make sure to enclose the value in single quotes (`''`).
-
-```bash
-WEB_PWHASH='$BALLOON-SHA256$v=1$s=1024,t=32$pZCbBIUH/Ew2n144eLn3vw==$vgej+obQip4DvSmNlywD0LUHlsHcqgLdbQLvDscZs78='
-```
-
-Uncomment the `FTLCONF_webserver_api_pwhash` environment variable in
-`docker-compose.yml`:
-
-```bash
-FTLCONF_webserver_api_pwhash: ${WEB_PWHASH}
-```
-
-Restart the containers:
-
-```bash
-docker compose down && docker compose up -d
-```
-
-## Step 7: Access the Pi-hole Web Interface
+## Step 5: Access the Pi-hole Web Interface
 
 Once running, open your web browser and go to:
 
@@ -157,7 +184,7 @@ http://<your-server-ip>/admin/
 
 Login using the password you set.
 
-## Step 8: Secure Web Interface With SSL (Optional)
+## Step 6: Secure Web Interface With SSL (Optional)
 
 For enhanced security, see my other guides on **configuring SSL encryption**
 for the Pi-hole web interface.
