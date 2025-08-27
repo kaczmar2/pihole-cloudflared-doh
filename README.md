@@ -131,14 +131,14 @@ host.
 Make sure to enclose the value in single quotes (`''`).
 
 ```bash
-WEB_PWHASH='$BALLOON-SHA256$v=1$s=1024,t=32$pZCbBIUH/Ew2n144eLn3vw==$vgej+obQip4DvSmNlywD0LUHlsHcqgLdbQLvDscZs78='
+WEBSERVER_PWHASH='$BALLOON-SHA256$v=1$s=1024,t=32$pZCbBIUH/Ew2n144eLn3vw==$vgej+obQip4DvSmNlywD0LUHlsHcqgLdbQLvDscZs78='
 ```
 
 Uncomment the `FTLCONF_webserver_api_pwhash` environment variable in
 `docker-compose.yml`:
 
 ```bash
-FTLCONF_webserver_api_pwhash: ${WEB_PWHASH}
+FTLCONF_webserver_api_pwhash: ${WEBSERVER_PWHASH}
 ```
 
 Restart the containers:
